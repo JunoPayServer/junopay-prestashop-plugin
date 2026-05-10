@@ -94,12 +94,15 @@ class JunoPay extends PaymentModule
 
         $rate = (float)(Configuration::get('JUNOPAY_ZATOSHIS_PER_CURRENCY_UNIT') ?: 100000000);
         $amountZat = (int)round((float)$cart->getOrderTotal(true, Cart::BOTH) * $rate);
+        $cartCreatedAt = isset($cart->date_add) ? strtotime((string)$cart->date_add) : time();
+        $externalOrderId = 'prestashop-cart-' . (int)$cart->id . '-' . ($cartCreatedAt ?: time());
         $payload = json_encode(array(
-            'external_order_id' => 'prestashop-cart-' . (int)$cart->id,
+            'external_order_id' => $externalOrderId,
             'amount_zat' => $amountZat,
             'metadata' => array(
                 'platform' => 'prestashop',
                 'cart_id' => (string)$cart->id,
+                'external_order_id' => $externalOrderId,
             ),
         ));
 
