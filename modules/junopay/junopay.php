@@ -41,8 +41,11 @@ class JunoPay extends PaymentModule
             return array();
         }
         $option = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
-        $option->setCallToActionText($this->l('Pay with JunoPay'))
-            ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), true))
+        $option->setCallToActionText($this->l('Pay with JunoPay'));
+        if (method_exists($option, 'setModuleName')) {
+            $option->setModuleName($this->name);
+        }
+        $option->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), true))
             ->setAdditionalInformation($this->l('A JUNO deposit address is generated after you place the order.'));
         return array($option);
     }
